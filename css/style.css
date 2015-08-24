@@ -2,21 +2,27 @@ html {
   background: #374046;
 }
 
+* {
+	margin: 0;
+	padding: 0;
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	box-sizing: border-box;
+}
+
 body {
 	padding: 0;
 	margin: 0;
-	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 16px;
     font-weight: 400;
 }
 
 #todoapp {
+	width: 510px;
+	margin: 10% auto 50px;
 }
 
 header {
-	width: 450px;
 	background: #9E9E9E;
-	margin: 10% auto 50px;
 	border-top: 25px solid #616161;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 	padding: 20px 30px 30px 30px; 
@@ -24,7 +30,6 @@ header {
 
 h1 {
 	color: #F5F5F5;
-	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: normal;
 	text-align: center;
 	margin: 0;
@@ -36,20 +41,48 @@ input[type="text"] {
  	border: none;
  	background-color: #F5F5F5;
  	box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
- 	width: 430px;
- 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+ 	width: 450px;
  	color: #212121;
  	font-size: 16px;
     font-weight: 400;
     outline: none;
 }
 
-#main {
-	margin: auto;
+li {
+	list-style: none;
+	height: 80px;
+	width: 510px;
+	background: #F5F5F5;
+	text-align: center;
+	padding: 25px 15px;
+	font-size: 17px;
 }
 
-li {
-	height: 150px;
-	width: 450px;
-	background: #F5F5F5;
+#none-todo {
+	color: #727272;
+	font-size: 20px;
+}
+
+.remove {
+	background: url('../images/cancel.png');
+	background-size: cover;
+    width: 17px;
+    height: 17px;
+    display: inline-block;
+    float: right;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+li:hover .remove {
+	opacity: 1;
+}
+
+input.edit {
+	display: none;
+}
+
+span.title {
+	cursor: pointer;
 }

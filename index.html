@@ -6,9 +6,17 @@
 		<link rel="icon" type="image/ico" href="images/favicon.ico">
 
 		<link rel="stylesheet" href="css/style.css">
+
+		<script src="js/jquery-2.1.4.js"></script>
+		<script src="js/underscore.js"></script>
+		<script src="js/backbone.js"></script>
+		<script src="js/todo.js"></script>
 	</head>
 	<body>
 		<div id="todoapp">
+		</div>
+
+		<script type="text/template" id="todolist-template">
 			<header>
 				<h1>To do</h1>
 				<input id="new-todo" type="text">
@@ -19,6 +27,16 @@
 					<li id="none-todo">Нет задач</li>
 				</ul>
 			</section>
-		</div>
+		</script>
+
+		<script type="text/template" id="todo-template">
+			<div class="view">
+				<span class="title">
+					<%- title %>
+				</span>
+				<i class="remove"></i>
+			</div>
+			<input class="edit" type="text" value="<%- title %>">
+		</script>
 	</body>
 </html>
