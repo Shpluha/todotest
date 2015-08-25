@@ -11,6 +11,7 @@
 		<script src="js/underscore.js"></script>
 		<script src="js/backbone.js"></script>
 		<script src="js/todo.js"></script>
+		<script src="js/backbone.localStorage.js"></script>
 	</head>
 	<body>
 		<div id="todoapp">
@@ -20,6 +21,14 @@
 			<header>
 				<h1>To do</h1>
 				<input id="new-todo" type="text">
+				<select>
+					<option value="0">Minor</option>
+					<option value="1">Major</option>
+					<option value="2">Critical</option>
+				</select>
+				<button id="create-button">
+					Создать
+				</button>
 			</header>
 
 			<section id="main">
@@ -30,13 +39,12 @@
 		</script>
 
 		<script type="text/template" id="todo-template">
-			<div class="view">
-				<span class="title">
-					<%- title %>
-				</span>
-				<i class="remove"></i>
-			</div>
-			<input class="edit" type="text" value="<%- title %>">
+			<i id="done-status" <%= primaryAttributes.done ? 'class="done"': '' %> > </i>
+			<span class="title <%= primaryAttributes.done ? 'done': '' %> <%= secondaryAttributes[primaryAttributes.priority] %> ">
+				<%- primaryAttributes.title %>
+			</span>
+			<i class="remove"></i>
+			<input class="edit" type="text" value="<%- primaryAttributes.title %>">
 		</script>
 	</body>
 </html>
