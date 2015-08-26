@@ -1,6 +1,6 @@
-"use strict"
-
 $(function() {
+	'use strict';
+
 	var Todo = Backbone.Model.extend({
 
 		defaults: {
@@ -31,48 +31,41 @@ $(function() {
 
 	var TodoView = Backbone.View.extend({
 
-		tagName: "li",
+		tagName: 'li',
+
+		className: 'todo',
 
 		template: _.template($('#todo-template').html()),
 
 		events: {
-			'click .remove': 'destroyModel',
-			'dblclick .title': 'editTitle',
-			'keypress .edit': 'updateModel',
-			'blur .edit': 'render',
-			'click i#done-status': 'changeDone'
+			'dblclick .todo__title': 'editTitle',
+			'click .todo__remove': 'destroyModel',
+			'click .todo__status': 'changeDone'
 		},
 
 		initialize: function() {
-			this.listenTo(this.model, 'change', this.render);
+			this.listenTo(this.model, 'change sync', this.render);
 			this.listenTo(this.model, 'destroy', this.remove);
 		},
 
 		render: function() {
-			this.$el.html(this.template({primaryAttributes: this.model.toJSON(), secondaryAttributes: this.model.priorityValues}));
+			this.$el.html(this.template({
+				primaryAttributes: this.model.toJSON(), 
+				secondaryAttributes: this.model.priorityValues
+			}));
 			return this;
+		},
+
+		editTitle: function() {
+			var formView = new FormView({
+				model: this.model,
+				buttonMode: 'update'
+			});
+			this.$el.html(formView.render().el);
 		},
 
 		destroyModel: function() {
 			this.model.destroy();
-		},
-
-		editTitle: function() {
-			this.$('.title').hide();
-			this.$('.edit').show().focus();
-		},
-
-		updateModel: function(event) {
-			if (event.keyCode != 13) return;
-
-			var value = this.$('.edit').val();
-
-			if (!value) this.destroyModel();
-			if (this.model.get('title') === value) {
-				this.render();
-			}
-
-			this.model.set({title: value});
 		},
 
 		changeDone: function() {
@@ -81,16 +74,66 @@ $(function() {
 		}
 	});
 
-	var TodoListView = Backbone.View.extend({
+	var FormView = Backbone.View.extend({
 
-		el: '#todoapp',
+		tagName: 'div',
 
-		template: _.template($('#todolist-template').html()),
+		className: 'form',
+
+		template: _.template($('#form-template').html()),
 
 		events: {
-			'keypress #new-todo': 'createOnEnter',
-			'click #create-button': 'create'
+			'click .form__button[data-action="update"]': 'updateModel',
+			'click .form__button[data-action="create"]': 'create'
 		},
+
+		initialize: function(options) {
+			this.options = options || {};
+		},
+
+		render: function() {
+			this.$el.html(this.template({
+				model: this.model ? this.model.toJSON() : {},
+				buttonMode: this.options.buttonMode
+			}));
+			return this;
+		},
+
+		updateModel: function() {
+			var value = this.$('.form__input').val(),
+				priority = parseInt(this.$('.form__select').val());
+
+			if (value) {
+				this.model.save({
+					title: value,
+					priority: priority
+				});
+			} else {
+				this.model.destroy();
+			}
+
+			this.remove();
+		},
+
+		create: function() {
+			var input = this.$('.form__input'),
+				priority = +this.$('.form__select').val();
+
+			if (!input.val()) return;
+
+			this.collection.create(
+				{title: input.val(),
+				priority: priority});
+
+      		input.val('');
+		}
+	});
+
+	var TodoListView = Backbone.View.extend({
+
+		el: '#todo-app',
+
+		template: _.template($('#todolist-template').html()),
 
 		initialize: function() {
 			var self = this;
@@ -99,25 +142,13 @@ $(function() {
 			this.listenTo(this.collection, 'reset', this.renderAll);
 		},
 
-		createOnEnter: function(e) {
-			if (e.keyCode != 13) return;
-			this.create();
-		},
-
-		create: function() {
-			var input = this.$('#new-todo'),
-				priority = +this.$('select').val();
-
-			if (!input.val()) return;
-
-			this.collection.create(
-				{title: input.val(),
-				priority: priority});
-      		input.val('');
-		},
-
 		render: function() {
+			var formView = new FormView({
+				collection: this.collection,
+				buttonMode: 'create'
+			});
 			this.$el.html(this.template());
+			this.$('.header').append(formView.render().el);
 			return this;
 		},
 
@@ -139,14 +170,14 @@ $(function() {
 		},
 
 		renderAll: function() {
-			this.collection.each(renderTodo, this);
+			this.collection.each(this.renderTodo, this);
 		},
 
 		checkTodosLengh: function() {
 			if (this.collection.length) {
-				this.$('#none-todo').hide();
+				this.$('.todo__empty').hide();
 			} else {
-				this.$('#none-todo').show();
+				this.$('.todo__empty').show();
 			}
 		}
 	});

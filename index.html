@@ -14,37 +14,39 @@
 		<script src="js/backbone.localStorage.js"></script>
 	</head>
 	<body>
-		<div id="todoapp">
+		<div class="todo-app" id="todo-app">
 		</div>
 
 		<script type="text/template" id="todolist-template">
-			<header>
-				<h1>To do</h1>
-				<input id="new-todo" type="text">
-				<select>
-					<option value="0">Minor</option>
-					<option value="1">Major</option>
-					<option value="2">Critical</option>
-				</select>
-				<button id="create-button">
-					Создать
-				</button>
+			<header class="header">
+				<h1 class="header__title">To do</h1>
 			</header>
 
 			<section id="main">
-				<ul id="todo-list">
-					<li id="none-todo">Нет задач</li>
-				</ul>
+				<ul class="todo-list" id="todo-list"></ul>
+				<div class="todo__empty">Нет задач</div>
 			</section>
 		</script>
 
 		<script type="text/template" id="todo-template">
-			<i id="done-status" <%= primaryAttributes.done ? 'class="done"': '' %> > </i>
-			<span class="title <%= primaryAttributes.done ? 'done': '' %> <%= secondaryAttributes[primaryAttributes.priority] %> ">
-				<%- primaryAttributes.title %>
-			</span>
-			<i class="remove"></i>
-			<input class="edit" type="text" value="<%- primaryAttributes.title %>">
+			<div class="todo__view">
+				<i class="todo__status<%= primaryAttributes.done ? ' todo__status--done': '' %>" id="done-status"></i>
+				<span class="todo__title todo__title--priority-<%= secondaryAttributes[primaryAttributes.priority] %>
+					<%= primaryAttributes.done ? ' todo__title--done': '' %>">
+					<%- primaryAttributes.title %>
+				</span>
+				<i class="todo__remove"></i>
+			</div>
+		</script>
+
+		<script type="text/template" id="form-template">
+			<input type="text" class="form__input" <%= model.title ? 'value="' + model.title + '"' : '' %>>
+			<select class="form__select">
+				<option value="0" <%= model.priority === 0 ? 'selected' : '' %>>Minor</option>
+				<option value="1" <%= model.priority === 1 ? 'selected' : '' %>>Major</option>
+				<option value="2" <%= model.priority === 2 ? 'selected' : '' %>>Critical</option>
+			</select>
+			<button class="form__button" data-action="<%= buttonMode %>"></button>
 		</script>
 	</body>
 </html>
