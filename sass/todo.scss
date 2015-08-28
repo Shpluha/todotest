@@ -1,0 +1,173 @@
+$white: #F5F5F5;
+
+html { 
+	background: $white;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	box-sizing: border-box;
+}
+
+body {
+	padding: 0;
+	margin: 0;
+	font-size: 16px;
+    font-weight: 400;
+}
+
+.todo-app {
+	width: 510px;
+	margin: 180px auto 50px;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.header {
+	background: #0288D1;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+	padding: 20px 30px 30px 30px; 
+	position: relative;
+	z-index: 5;
+
+	&__title {
+		color: $white;
+		font-weight: normal;
+		text-align: center;
+		margin: 0;
+	}
+}
+
+.form {
+	&__input {
+		margin-top: 20px;
+		padding: 10px;
+	 	border: none;
+	 	background-color: $white;
+	 	box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+	 	width: 325px;
+	 	color: #212121;
+	 	font-size: 16px;
+	    font-weight: 400;
+	    outline: none;
+	}
+
+	&__select {
+		height: 38px;
+		margin-left: 5px;
+	}
+
+	&__button {
+		display: inline-block;
+		position: relative;
+		border: 0px;
+		right: -10px;
+		bottom: -15px;
+		width: 38px;
+		height: 38px;
+		background-color: #03A9F4;
+		background: url('../images/report.svg') no-repeat #03A9F4;
+		background-size: 35px;
+		background-position: center;
+		border: none;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+		outline: none;
+		transition: 0.3s;
+
+		&:active {
+			box-shadow: none;
+		}
+	}
+}
+
+.todo {
+	padding: 0 10px;
+	list-style: none;
+	height: 80px;
+	background: $white;
+	text-align: center;
+	font-size: 17px;
+	border-bottom: 1px solid #DADADA;
+	position: relative;
+	line-height: 80px;
+
+	&:last-child {
+		border: none;
+	}
+
+	&:active {
+		border-bottom: 1px solid #DADADA;
+		border-top: 1px solid #DADADA;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+	}
+
+	&__empty {
+		color: #727272;
+		font-size: 20px;
+		list-style: none;
+		text-align: center;
+		height: 80px;
+		line-height: 80px;
+	}
+
+	&__remove {
+		background: url('../images/cancel.png');
+		background-size: cover;
+	    width: 20px;
+	    height: 20px;
+	    display: inline-block;
+	    position: absolute;
+	    right: 15px;
+	    top: 30px;
+	    opacity: 0;
+	    cursor: pointer;
+	    transition: opacity 0.3s;
+	}
+
+	&:hover {
+		.todo__remove,
+		.todo__status {
+			opacity: 1;
+		}
+	};
+
+	&__status {
+		opacity: 0;
+		background: url('../images/check_box_outline.png') no-repeat;
+		background-size: cover;
+		width: 30px;
+	    height: 30px;
+	    position: absolute;
+	    cursor: pointer;
+	    left: 15px;
+	    top: 25px;
+	    transition: opacity 0.3s;
+
+	    &--done {
+	    	background: url('../images/check_box.png') no-repeat;
+			background-size: cover;
+			opacity: 1;
+	    }
+	}
+
+	&__title {
+		cursor: pointer;
+
+		&--done {
+			text-decoration: line-through;
+		}
+
+		&--priority{
+			&-critical {
+				color: #FF5252;
+			}
+			&-major {
+				color: #F57C00;
+			}
+			&-minor {
+				color: #448AFF;
+			}
+		}
+	}
+}

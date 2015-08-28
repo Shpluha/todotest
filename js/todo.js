@@ -6,7 +6,8 @@ $(function() {
 		defaults: {
 			title: 'Новая задача',
 			done: false,
-			priority: 0
+			priority: 0,
+			order: 0
 		},
 
 		priorityValues: {
@@ -23,10 +24,55 @@ $(function() {
 
 		localStorage: new Backbone.LocalStorage('todos-backbone'),
 
-		comparator: function(model) {
-			return model.get('priority');
-		}
+		updateSort: function(startIndex, stopIndex) {
+			var sortModel = this.at(startIndex);
 
+			this.at(startIndex).destroy();
+
+			this.each(function(model) {
+				var order = model.get('order');
+				if (stopIndex < startIndex && order >= stopIndex && order < startIndex) {
+					order += 1;
+					model.save({order: order});
+				} else if (order <= stopIndex && order > startIndex) {
+					order -= 1;
+					model.save({order: order});
+				}
+			});
+
+			// this.each(function(model) {
+			// 	var order = +model.get('order');
+			// 	if (order >= stopIndex) {
+			// 		order++;
+			// 		model.save({order: order})
+			// 	}
+			// });
+
+			sortModel.set({order: stopIndex});
+
+			this.create(sortModel);
+
+
+			// var sortModel = this.at(startIndex);
+
+			// this.at(startIndex).destroy();
+			// // this.at(startIndex).destroy({silent: true});
+			// // this.add(sortModel, {
+			// // 	at: stopIndex,
+			// // 	silent: true
+			// // });
+			// console.log(this.pluck('title'));
+		},
+
+		nextOrder: function() {
+			if (!this.length) return 0;
+      		return this.last().get('order') + 1;
+      	},
+
+      	comparator: function(model) {
+      		return model.get('order');
+      	}
+		
 	});
 
 	var TodoView = Backbone.View.extend({
@@ -123,7 +169,9 @@ $(function() {
 
 			this.collection.create(
 				{title: input.val(),
-				priority: priority});
+				priority: priority,
+				order: this.collection.nextOrder()
+			});
 
       		input.val('');
 		}
@@ -137,7 +185,7 @@ $(function() {
 
 		initialize: function() {
 			var self = this;
-			this.listenTo(this.collection, 'add', this.renderTodo);
+			this.listenTo(this.collection, 'add', this.renderTodos);
 			this.listenTo(this.collection, 'remove', this.checkTodosLengh);
 			this.listenTo(this.collection, 'reset', this.renderAll);
 		},
@@ -149,11 +197,30 @@ $(function() {
 			});
 			this.$el.html(this.template());
 			this.$('.header').append(formView.render().el);
+			this.initSortable();
 			return this;
 		},
 
+		initSortable: function() {
+			var startIndex,
+				self = this;
+
+			this.$('.todo-list').sortable({
+				axis: 'y',
+				containment: 'parent',
+				cursor: 'move',
+				tolerance: 'pointer',
+				start: function(event, ui) {
+					startIndex = ui.item.index();
+				},
+				update: function(event, ui) {
+					self.collection.updateSort(startIndex, ui.item.index());
+				}
+			});
+		},
+
 		renderTodos: function() {
-			this.$('#todo-list').empty();
+			this.$('.todo-list').empty();
 			_.each(this.collection.models, function(model) {
 				this.renderTodo(model);
 			}, this);
@@ -164,7 +231,7 @@ $(function() {
 					model: todo
 				});
 
-			this.$('#todo-list').append(modelView.render().el);
+			this.$('.todo-list').append(modelView.render().el);
 
 			this.checkTodosLengh();
 		},
