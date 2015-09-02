@@ -8,7 +8,7 @@ var todo_template = {
 				'<i class="todo__remove"></i>' +
 			'</div>',
 
-	form_template: '<input type="text" class="form__input" <%= model.title ? ' + 'value="' + 'model.title' + '"' + ' : ' +'""' + '%>>' +
+	form_template: '<input type="text" class="form__input" value="<%= model.title ? model.title : "" %>" >' +
 			'<select class="form__select">' +
 				'<option value="0" <%= model.priority === 0 ? "selected" : "" %>>Minor</option>' +
 				'<option value="1" <%= model.priority === 1 ? "selected" : "" %>>Major</option>' +
