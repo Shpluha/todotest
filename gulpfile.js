@@ -1,7 +1,10 @@
-var jshint = require('gulp-jshint');
-var gulp = require('gulp');
-var watcher = gulp.watch('./js/todo.js', ['lint']);
-var sass = require('gulp-sass');
+var jshint  = require('gulp-jshint'),
+	gulp    = require('gulp'),
+	watch   = require('gulp-watch'),
+	watcher = gulp.watch('./js/todo.js', ['lint']),
+	sass    = require('gulp-sass'),
+	concat  = require('gulp-concat'),
+	Server  = require('karma').Server;
 
 gulp.task('default', function() {
   // place code for your default task here
@@ -14,11 +17,22 @@ gulp.task('lint', function() {
 });
 
 gulp.task('sass', function () {
-  gulp.src('./sass/*.scss')
+  gulp.src('./src/sass/*.scss')
     .pipe(sass.sync().on('error', sass.logError))
-    .pipe(gulp.dest('./css'));
+    .pipe(gulp.dest('./build/css'));
 });
  
 gulp.task('sass:watch', function () {
-  gulp.watch('./sass/*.scss', ['sass']);
+  gulp.watch('./src/sass/*.scss', ['sass']);
+});
+
+gulp.task('concatjs', function() {
+	return gulp.src([
+			'./src/js/models/*.js',
+			'./src/js/collections/*.js',
+			'./src/js/views/*.js',
+			'./src/js/*.js'
+		])
+		.pipe(concat('todo.js'))
+		.pipe(gulp.dest('./build/js/'));
 });
