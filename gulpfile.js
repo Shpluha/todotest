@@ -1,6 +1,5 @@
 var jshint  = require('gulp-jshint'),
 	gulp    = require('gulp'),
-	watch   = require('gulp-watch'),
 	watcher = gulp.watch('./js/todo.js', ['lint']),
 	sass    = require('gulp-sass'),
 	concat  = require('gulp-concat'),
