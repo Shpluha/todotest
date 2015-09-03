@@ -1,56 +1,60 @@
-var FormView = Backbone.View.extend({
+(function(){
+	'use strict';
 
-	tagName: 'div',
+	window.FormView = Backbone.View.extend({
 
-	className: 'form',
+		tagName: 'div',
 
-	template: _.template(todo_template.form_template),
+		className: 'form',
 
-	events: {
-		'click .form__button[data-action="update"]': 'updateModel',
-		'click .form__button[data-action="create"]': 'create'
-	},
+		template: _.template(todo_template.form_template),
 
-	initialize: function(options) {
-		this.options = options || {};
-	},
+		events: {
+			'click .form__button[data-action="update"]': 'updateModel',
+			'click .form__button[data-action="create"]': 'create'
+		},
 
-	render: function() {
-		this.$el.html(this.template({
-			model: this.model ? this.model.toJSON() : {},
-			buttonMode: this.options.buttonMode
-		}));
-		return this;
-	},
+		initialize: function(options) {
+			this.options = options || {};
+		},
 
-	updateModel: function() {
-		var value = this.$('.form__input').val(),
-			priority = parseInt(this.$('.form__select').val());
+		render: function() {
+			this.$el.html(this.template({
+				model: this.model ? this.model.toJSON() : {},
+				buttonMode: this.options.buttonMode
+			}));
+			return this;
+		},
 
-		if (value) {
-			this.model.save({
-				title: value,
-				priority: priority
+		updateModel: function() {
+			var value = this.$('.form__input').val(),
+				priority = parseInt(this.$('.form__select').val());
+
+			if (value) {
+				this.model.save({
+					title: value,
+					priority: priority
+				});
+			} else {
+				this.model.destroy();
+			}
+
+			this.remove();
+		},
+
+		create: function() {
+			var input = this.$('.form__input'),
+				priority = +this.$('.form__select').val();
+
+			if (!input.val()) return;
+
+			this.collection.create(
+				{title: input.val(),
+				priority: priority,
+				order: this.collection.nextOrder()
 			});
-		} else {
-			this.model.destroy();
+
+	  		input.val('');
 		}
-
-		this.remove();
-	},
-
-	create: function() {
-		var input = this.$('.form__input'),
-			priority = +this.$('.form__select').val();
-
-		if (!input.val()) return;
-
-		this.collection.create(
-			{title: input.val(),
-			priority: priority,
-			order: this.collection.nextOrder()
-		});
-
-  		input.val('');
-	}
-});
+	});
+})();

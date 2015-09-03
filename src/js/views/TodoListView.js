@@ -1,71 +1,75 @@
-var TodoListView = Backbone.View.extend({
+(function(){
+	'use strict';
 
-	el: '#todo-app',
+	window.TodoListView = Backbone.View.extend({
 
-	template: _.template(todo_template.app_template),
+		el: '#todo-app',
 
-	initialize: function() {
-		var self = this;
-		this.listenTo(this.collection, 'add', this.renderTodos);
-		this.listenTo(this.collection, 'remove', this.checkTodosLengh);
-		this.listenTo(this.collection, 'reset', this.renderAll);
-	},
+		template: _.template(todo_template.app_template),
 
-	render: function() {
-		var formView = new FormView({
-			collection: this.collection,
-			buttonMode: 'create'
-		});
-		this.$el.html(this.template());
-		this.$('.header').append(formView.render().el);
-		this.initSortable();
-		return this;
-	},
+		initialize: function() {
+			var self = this;
+			this.listenTo(this.collection, 'add', this.renderTodos);
+			this.listenTo(this.collection, 'remove', this.checkTodosLengh);
+			this.listenTo(this.collection, 'reset', this.renderAll);
+		},
 
-	initSortable: function() {
-		var startIndex,
-			self = this;
-
-		this.$('.todo-list').sortable({
-			axis: 'y',
-			containment: 'parent',
-			cursor: 'move',
-			tolerance: 'pointer',
-			start: function(event, ui) {
-				startIndex = ui.item.index();
-			},
-			update: function(event, ui) {
-				self.collection.updateSort(startIndex, ui.item.index());
-			}
-		});
-	},
-
-	renderTodos: function() {
-		this.$('.todo-list').empty();
-		_.each(this.collection.models, function(model) {
-			this.renderTodo(model);
-		}, this);
-	},
-
-	renderTodo: function(todo) {
-		var modelView = new TodoView({
-				model: todo
+		render: function() {
+			var formView = new FormView({
+				collection: this.collection,
+				buttonMode: 'create'
 			});
+			this.$el.html(this.template());
+			this.$('.header').append(formView.render().el);
+			this.initSortable();
+			return this;
+		},
 
-		this.$('.todo-list').append(modelView.render().el);
+		initSortable: function() {
+			var startIndex,
+				self = this;
 
-		this.checkTodosLengh();
-	},
+			this.$('.todo-list').sortable({
+				axis: 'y',
+				containment: 'parent',
+				cursor: 'move',
+				tolerance: 'pointer',
+				start: function(event, ui) {
+					startIndex = ui.item.index();
+				},
+				update: function(event, ui) {
+					self.collection.updateSort(startIndex, ui.item.index());
+				}
+			});
+		},
 
-	renderAll: function() {
-		this.collection.each(this.renderTodo, this);
-	},
+		renderTodos: function() {
+			this.$('.todo-list').empty();
+			_.each(this.collection.models, function(model) {
+				this.renderTodo(model);
+			}, this);
+		},
 
-	checkTodosLengh: function() {
-		if (this.collection.length) {
-			this.$('.todo__empty').hide();
-		} else {
-			this.$('.todo__empty').show();
+		renderTodo: function(todo) {
+			var modelView = new TodoView({
+					model: todo
+				});
+
+			this.$('.todo-list').append(modelView.render().el);
+
+			this.checkTodosLengh();
+		},
+
+		renderAll: function() {
+			this.collection.each(this.renderTodo, this);
+		},
+
+		checkTodosLengh: function() {
+			if (this.collection.length) {
+				this.$('.todo__empty').hide();
+			} else {
+				this.$('.todo__empty').show();
+			}
 		}
-	}
-});
+	});
+})();
